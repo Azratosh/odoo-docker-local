@@ -40,11 +40,6 @@ list:
 init: environment
 
 
-.PHONY = check-user
-check-user:
-	@[ $$(id -u) -ne 0 ] || (echo "Current user must not be root" && exit 1)
-
-
 .PHONY = build-dirs
 build-dirs:
 	@mkdir -p ${MODULE_DIR}
@@ -63,18 +58,18 @@ modules: modules-local modules-oca modules-third-party
 
 .PHONY = modules-local
 #: Copy local Odoo module directories using rsync.
-modules-local: check-user build-dirs
+modules-local: build-dirs
 	@[ $$(sudo id -u) -eq 0 ] || (echo "Must be able to sudo in order to sync modules reliably" && exit 1)
 	@echo "Syncing local module directories"
 	@for DIRECTORY in $$(echo "${LOCAL_MODULES}" | tr ':' '\n'); do \
-	  sudo su -c "rsync --delete -a $${DIRECTORY} ${LOCAL_MODULE_DIR}"; \
+	  rsync --delete -a $${DIRECTORY} ${LOCAL_MODULE_DIR}; \
 	done;
 	@echo "Done"
 
 
 .PHONY = modules-oca
 #: Clone and checkout OCA module directories.
-modules-oca: check-user build-dirs
+modules-oca: build-dirs
 	@echo "Syncing OCA module repositories"
 	@cd ${OCA_MODULE_DIR}; \
 	for REPO in $$(echo "${OCA_MODULES}" | tr ',' '\n'); do \
@@ -89,7 +84,7 @@ modules-oca: check-user build-dirs
 
 .PHONY = modules-third-party
 #: Clone and checkout third party module repositories.
-modules-third-party: check-user build-dirs
+modules-third-party: build-dirs
 	@echo "Syncing third party module repositories"
 	@cd ${THIRD_PARTY_MODULE_DIR}; \
 	for REPO in $$(echo "${THIRD_PARTY_MODULES}" | tr ' ' '\n'); do \
