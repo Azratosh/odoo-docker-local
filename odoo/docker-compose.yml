@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  postgres-odoo:
+    image: postgres-odoo-local:${POSTGRES_VERSION}
+    container_name: postgres-odoo-local-${ODOO_VERSION_SHORT}
+    environment:
+      - POSTGRES_PASSWORD
+      - ODOO_PASSWORD
+    networks:
+      - back-odoo
+    restart: always
+    shm_size: 256M
+    volumes:
+      - postgres-odoo-local:/var/lib/postgresql/data
+
+  odoo:
+    image: odoo-local:${ODOO_VERSION}
+    container_name: odoo-local-${ODOO_VERSION_SHORT}
+    depends_on:
+      - postgres-odoo
+    environment:
+      - HOST=postgres-odoo-local-${ODOO_VERSION_SHORT}
+      - USER=odoo
+      - PASSWORD=${ODOO_PASSWORD}
+    networks:
+      - back-odoo
+    ports:
+      - "8069:8069"
+    restart: always
+    volumes:
+      - odoo-local-data:/var/lib/odoo
+      - odoo-local-modules:/mnt/extra-addons
+
+volumes:
+  postgres-odoo-local: {}
+  odoo-local-data: {}
+  odoo-local-modules: {}
+
+networks:
+  back-odoo:
+    driver: bridge
+    name: back-odoo

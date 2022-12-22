@@ -1,0 +1,10 @@
+xlsxwriter
+xlrd
+fdfgen
+checksumdir
+raven
+IPy
+gevent
+jingtrang
+openupgradelib==3.3.2
+pysftp
