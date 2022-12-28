@@ -9,7 +9,7 @@ ADD ./init /docker-entrypoint-initdb.d/
 
 # Installs additional dependencies used for upgrading Odoo
 RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-    python3 curl \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    python3 curl ssh rsync ca-certificates \
     && apt-get -y clean
