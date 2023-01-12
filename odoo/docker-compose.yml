@@ -33,11 +33,16 @@ services:
       - odoo-local-modules:/mnt/extra-addons
 
 volumes:
-  postgres-odoo-local: {}
-  odoo-local-data: {}
-  odoo-local-modules: {}
+  postgres-odoo-local:
+    name: "postgres-odoo-${ODOO_VERSION_SHORT}-local"
+
+  odoo-local-data:
+    name: "odoo-local-${ODOO_VERSION_SHORT}-local"
+
+  odoo-local-modules:
+    name: "odoo-local-${ODOO_VERSION_SHORT}-modules"
 
 networks:
   back-odoo:
     driver: bridge
-    name: back-odoo
+    name: back-odoo-${ODOO_VERSION_SHORT}
